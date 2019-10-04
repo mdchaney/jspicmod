@@ -1,0 +1,4 @@
+video#preview, canvas#output {
+	height: 50vh;
+	max-width: 500px;
+}
