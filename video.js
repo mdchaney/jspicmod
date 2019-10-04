@@ -53,24 +53,24 @@ $(function() {
 		}
 	}
 
+	let gray_worker = new Worker('gray_worker.js');
+
+	gray_worker.onmessage = function(e) {
+		// Write to output canvas
+		output_ctx.putImageData(e.data, 0, 0);
+		// run this again after 50 ms
+		setTimeout(grab_frame, 50);
+	}
+
 	function grab_frame() {
 		if (ctx) {
 			// copy image from video element to canvas context
 			ctx.drawImage(video_element, 0, 0, canvas.width, canvas.height);
 			// grab image data from canvas context
 			let image_data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			// Convert an image to grayscale
-			let data = image_data.data;
-			for (var i = 0; i < data.length; i += 4) {
-				var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-				data[i]     = avg; // red
-				data[i + 1] = avg; // green
-				data[i + 2] = avg; // blue
-			}
-			// Write to output canvas
-			output_ctx.putImageData(image_data, 0, 0);
-			// run this again after 50 ms
-			setTimeout(grab_frame, 50);
+			// send to worker
+			console.log("Sending image data to worker.");
+			gray_worker.postMessage(image_data);
 		}
 	}
 
