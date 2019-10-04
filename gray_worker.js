@@ -1,4 +1,8 @@
-onmessage = function(image_data) {
+onmessage = function(e) {
+	make_gray(e.data);
+}
+
+function make_gray(image_data) {
 	console.log("Got image data in worker");
 	// Convert an image to grayscale
 	let data = image_data.data;
